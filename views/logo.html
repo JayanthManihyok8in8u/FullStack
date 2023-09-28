@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Logo Search</title>
+    <style>
+        /* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body and Header Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 36px;
+}
+
+/* Search Container Styles */
+div {
+    text-align: center;
+    margin: 20px 0;
+}
+
+label {
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+#company-name {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    font-size: 16px;
+}
+
+#search-button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#search-button:hover {
+    background-color: #555;
+}
+
+/* Results Container Styles */
+#results {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 1.2rem;
+    color: #555;
+    margin: 5px 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Company Logo Search</h1>
+    <div>
+        <label for="company-name">Enter Company Name:</label>
+        <input type="text" id="company-name" placeholder="Company Name">
+        <button id="search-button">Search</button>
+    </div>
+    <div id="results">
+        <!-- Logo results will be displayed here -->
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchButton = document.getElementById('search-button');
+            const companyNameInput = document.getElementById('company-name');
+            const resultsContainer = document.getElementById('results');
+
+            searchButton.addEventListener('click', function() {
+                const companyName = companyNameInput.value.trim();
+
+                if (companyName) {
+                    searchCompanyLogo(companyName);
+                }
+            });
+
+            function searchCompanyLogo(companyName) {
+                // Replace 'YOUR_API_KEY' with your actual API key
+                const apiKey = 'iYiHlG7LrxC4Ygqy0RTdXLKhdEdAolouMgaBQ97y';
+                const apiUrl = `https://api.api-ninjas.com/v1/logo?name=${encodeURIComponent(companyName)}`;
+
+                fetch(apiUrl, {
+                    method: 'GET',
+                    headers: { 'X-Api-Key': apiKey },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    displayLogoResults(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching logo data:', error);
+                });
+            }
+
+            function displayLogoResults(data) {
+                resultsContainer.innerHTML = '';
+
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(result => {
+                        const logoDiv = document.createElement('div');
+                        logoDiv.innerHTML = `
+                            <h2>${result.name}</h2>
+                            <p>Ticker Symbol: ${result.ticker}</p>
+                            <img src="${result.image}" alt="${result.name} Logo">
+                        `;
+                        resultsContainer.appendChild(logoDiv);
+                    });
+                } else {
+                    const noResultsParagraph = document.createElement('p');
+                    noResultsParagraph.textContent = 'No results found.';
+                    resultsContainer.appendChild(noResultsParagraph);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
